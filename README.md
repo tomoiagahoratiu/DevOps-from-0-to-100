@@ -52,12 +52,39 @@ docker push YourDockerID/backend-app
 After the image is in dockerhub we create and .yaml file using kubectl from cli
 
 ```bash
-kubectl create deployment nameOfPod --image=YourDockerID/nameOfImage --dry-run -o=yaml
+kubectl create deployment backend-igrow --image=horatiut98/graphql-backend --dry-run -o=yaml
 ```
 
 After running this command you will get a genereted portion of code. Copy it and create a deployment.yaml file in your service
 
 After you create your deployment.yaml from your service type in cmd
+The yaml file should look like this
+```bash
+apiVersion: apps/v1
+kind: Deployment 
+metadata:
+  creationTimestamp: null
+  labels:
+    app: backend-igrow -> label of pod, we will need this later to create a service
+  name: backend-igrow
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend-igrow
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: backend-igrow
+    spec:
+      containers:
+        - image: horatiut98/graphql-backend -> where we find image (our dockerId) + image name = image from where we created the pod
+          name: graphql-backend
+          resources: {}
+status: {}
+```
 
 ```bash
 kubectl apply -f deployment.yaml
