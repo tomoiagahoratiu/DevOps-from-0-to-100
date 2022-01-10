@@ -57,8 +57,8 @@ kubectl create deployment backend-igrow --image=horatiut98/graphql-backend --dry
 
 After running this command you will get a genereted portion of code. Copy it and create a deployment.yaml file in your service
 
-After you create your deployment.yaml from your service type in cmd
 The yaml file should look like this
+
 ```bash
 apiVersion: apps/v1
 kind: Deployment 
@@ -85,6 +85,8 @@ spec:
           resources: {}
 status: {}
 ```
+
+After you create your deployment.yaml from your service type in cmd
 
 ```bash
 kubectl apply -f deployment.yaml
