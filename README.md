@@ -41,7 +41,7 @@ docker logs --follow container_id -> shows logs of that container in real time
 ### 3.1 RUN BACKEND SERVICE IN KUBERNETES
 For local use we need minikube and docker. 
 
-After minikube runs in docker we need to push the backend image to dockerhub, the name of the image has to have your usarname in it's tag.
+After minikube runs in docker we need to push the backend image to dockerhub, the name of the image has to have your username in it's tag.
 
 ```bash
 docker tag backend-app YourDockerID/backend-app
@@ -52,15 +52,20 @@ docker push YourDockerID/backend-app
 After the image is in dockerhub we create and .yaml file using kubectl from cli
 
 ```bash
-kubectl create deployment demo --image=YourDockerID/backend-app --dry-run -0=yaml
-
-kubectl create service clusterip demo --tcp 8080:8080 --dry-run -o=yaml
-
-kubectl apply -f deployment.yaml
+kubectl create deployment nameOfPod --image=YourDockerID/nameOfImage --dry-run -o=yaml
 ```
 
+After running this command you will get a genereted portion of code. Copy it and create a deployment.yaml file in your service
+
+After you create your deployment.yaml from your service type in cmd
+
+```bash
+kubectl apply -f deployment.yaml
+```
+This will create our pod.
 Then use [kubectl get all] to see all the pods. When our pod has RUNNING status then use 
 
 ```bash
-kubectl port-forward POD_NAME 8080:8080
+kubectl port-forward POD_NAME 8080:8080 for backend
+kubectl port-forward POD_NAME 3000:3000 for frontend
 ```

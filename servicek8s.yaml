@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: igrow-backend-service
+spec:
+  type: ClusterIP
+  selector:
+    name: igrowdemo
+  ports:
+    - protocol: TCP
+      targetPort: 8080
+      port: 8080

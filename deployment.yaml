@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: backend-igrow
+  name: backend-igrow
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend-igrow
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: backend-igrow
+    spec:
+      containers:
+        - image: horatiut98/graphql-backend
+          name: graphql-backend
+          resources: {}
+status: {}
