@@ -98,3 +98,12 @@ Then use [kubectl get all] to see all the pods. When our pod has RUNNING status 
 kubectl port-forward POD_NAME 8080:8080 for backend
 kubectl port-forward POD_NAME 3000:3000 for frontend
 ```
+
+By using this we forward it's port which is 8080 to localhost:8080 so we can access it.
+Another example.
+
+```bash
+kubectl port-forward POD_NAME 5000:8080
+```
+
+Listen on port 5000 locally and targets 8080 in pod.
