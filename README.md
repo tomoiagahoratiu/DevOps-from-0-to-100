@@ -3,6 +3,12 @@
 This repository contains 2 services, one for backend and one for frontend.
 Backend services runs on localhost on port 8080 and frontend on port 3000.
 
+For completing this tutorial you need knowldege of docker and kubernetes. If you don't understand some terminology read the documentation.
+
+https://docs.docker.com/
+
+https://kubernetes.io/docs/home/
+
 ## 2. DOCKER
 ### 2.1 BUILD DOCKER CONTAINER BACKEND
 
@@ -38,15 +44,15 @@ docker logs --follow container_id -> shows logs of that container in real time
 ```
 
 ## 3. KUBERNETES
-### 3.1 RUN BACKEND SERVICE IN KUBERNETES
+### 3.1 RUN SERVICE IN KUBERNETES
 For local use we need minikube and docker. 
 
 After minikube runs in docker we need to push the backend image to dockerhub, the name of the image has to have your username in it's tag.
 
 ```bash
-docker tag backend-app YourDockerID/backend-app
+docker tag backend-igrow YourDockerID/backend-igrow
 
-docker push YourDockerID/backend-app
+docker push YourDockerID/backend-igrow
 ```
 
 After the image is in dockerhub we create and .yaml file using kubectl from cli
@@ -95,8 +101,7 @@ This will create our pod.
 Then use [kubectl get all] to see all the pods. When our pod has RUNNING status then use 
 
 ```bash
-kubectl port-forward POD_NAME 8080:8080 for backend
-kubectl port-forward POD_NAME 3000:3000 for frontend
+kubectl port-forward backend-igrow 8080:8080 for backend
 ```
 
 By using this we forward it's port which is 8080 to localhost:8080 so we can access it.
@@ -107,3 +112,38 @@ kubectl port-forward POD_NAME 5000:8080
 ```
 
 Listen on port 5000 locally and targets 8080 in pod.
+
+Now repeat the steps for the frontend service, use port-forward POD_NAME 3000:3000 for it.
+
+### 3.2 COMMUNICATION BETWEEN TWO PODS
+
+After we create both pods and we are sure that they are working in order for our pods to communicate with each other we need to create services.
+
+```bash
+kubectl create service clusterip igrow-backend-service --tcp 8080:8080 --dry-run -o=yaml
+```
+
+After running this command you will get a genereted portion of code. Copy it and create a servicek8s.yaml file in your service
+
+The yaml file should look like this
+
+```bash
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: igrow-backend-service
+  name: igrow-backend-service
+spec:
+  ports:
+  - name: 8080-8080
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: igrow-backend-service
+  type: ClusterIP
+status:
+  loadBalancer: {}
+```
