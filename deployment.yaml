@@ -1,24 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  creationTimestamp: null
-  labels:
-    app: backend-igrow
   name: backend-igrow
+  namespace: ingress-nginx
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: backend-igrow
-  strategy: {}
+      component: java
   template:
     metadata:
-      creationTimestamp: null
       labels:
-        app: backend-igrow
+        component: java
     spec:
       containers:
-        - image: horatiut98/graphql-backend
-          name: graphql-backend
-          resources: {}
-status: {}
+        - image: horatiut98/igrow-backend
+          name: server
+          ports:
+            - containerPort: 8080
