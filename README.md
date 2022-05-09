@@ -1,4 +1,4 @@
-# DEVOPS FROM 0 TO 100\
+# DEVOPS FROM 0 TO 100
 
 Purpose of tutorial is to connect two services inside the kubernetes cluster.
 
@@ -185,9 +185,58 @@ spec:
       targetPort: 3000
 ```
 
-Now you can execute [kubectl get svc] and see that on the EXTERNAL_IP of our frontend service we have <pending>. By using [minikube tunnel] we create a network route on the host to the service of our cluster.
+Now you can execute [kubectl get svc] and see that on the EXTERNAL_IP of our frontend service we have 'pending'. By using [minikube tunnel] we create a network route on the host to the service of our cluster.
 
 If we type again [kubectl get svc] we will see that we have an IP on EXTERNAL_IP. Copy the EXTERNAL_IP go trough your browser and type EXTERNAL_IP:3000, now the application should be available.
+
+### 3.3 INGRESS-NGINX
+https://github.com/kubernetes/ingress-nginx
+
+Previous we did the networking using load balancer which is a legacy way of getting network traffic into a cluster. With LoadBalancer we can't access multiple services if we want to expose more of them.
+
+In the production env for network traffic we use ingress-nginx.
+
+With ingress we will route traffic based on some configuration. The ingress controller will take care that the routing configurations are met.
+
+
+For installing ingress run 
+```bash
+minikube addons enable ingress
+```
+
+Now we need to configure ingress via ingress.yaml file.
+```bash
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-service
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: nginx-example
+  rules:
+    - http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: igrow-frontend-service
+                port:
+                  number: 3000
+```
+
+From the .yaml file we can see that for path that start with "/" our traffic will be routed to the frontend service.
+
+A new namespace "ingress-nginx" has been created in kubernetes (use [kubectl get ns] to see all namespaces). We will change namespaces using
+
+```bash
+kubectl config set-context --current --namespace=ingress-nginx
+```
+Now we also need to update all .yaml files at metadata -> namespace from default with ingress-nginx. Also we need to update the frontend service from LoadBalancer to ClusterIP because the ingress will take care of the networking. We can now apply all .yaml files.
+
+Again we need to use [minikube tunnel] to create a network route on the host to the service of our cluster(ingress). The application is now avilalbe at 127.0.0.1
 
 
 
